@@ -6,7 +6,7 @@ namespace BlogAPI.Src.Repositorios
 {
     /// <summary>
     /// <para>Resumo: Responsavel por representar ações de CRUD de usuario</para>
-    /// <para>Criado por: Generation</para>
+    /// <para>Criado por: Reynald</para>
     /// <para>Versão: 1.0</para>
     /// <para>Data: 29/04/2022</para>
     /// </summary>

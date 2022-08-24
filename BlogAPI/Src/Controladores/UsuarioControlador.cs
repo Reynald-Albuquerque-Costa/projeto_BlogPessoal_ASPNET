@@ -30,6 +30,25 @@ namespace BlogAPI.Src.Controladores
             #endregion
 
             #region Métodos
+            /// Criar novo Usuario
+            /// </summary>
+            /// <param name="usuario">Contrutor para criar usuario</param>
+            /// <returns>ActionResult</returns>
+            /// <remarks>
+            /// Exemplo de requisição:
+            ///
+            /// POST /api/Usuarios/cadastrar
+            /// {
+            /// "nome": "Reynald Costa",
+            /// "email": "reynald@domain.com",
+            /// "senha": "134652",
+            /// "foto": "URLFOTO",
+            /// "tipo": "NORMAL"
+            /// }
+            ///
+            /// </remarks>
+            /// <response code="201">Retorna usuario criado</response>
+            /// <response code="401">E-mail ja cadastrado</response>
 
             [HttpPost("cadastrar")]
             [AllowAnonymous]
@@ -46,6 +65,14 @@ namespace BlogAPI.Src.Controladores
                 }
             }
 
+            /// <summary>
+            /// Pegar usuario pelo Email
+            /// </summary>
+            /// <param name="emailUsuario">E-mail do usuario</param>
+            /// <returns>ActionResult</returns>
+            /// <response code="200">Retorna o usuario</response>
+            /// <response code="404">Email não existente</response>
+
             [HttpGet("email/{emailUsuario}")]
             [Authorize(Roles = "NORMAL,ADMINISTRADOR")]
             public async Task<ActionResult> PegarUsuarioPeloEmailAsync([FromRoute] string emailUsuario)
@@ -57,6 +84,23 @@ namespace BlogAPI.Src.Controladores
                 return Ok(usuario);
             }
 
+            /// <summary>
+            /// Pegar Autorização
+            /// </summary>
+            /// <param name="usuario">Construtor para logar usuario</param>
+            /// <returns>ActionResult</returns>
+            /// <remarks>
+            /// Exemplo de requisição:
+            ///
+            /// POST /api/Usuarios/logar
+            /// {
+            /// "email": "reynald@domain.com",
+            /// "senha": "134652"
+            /// }
+            ///
+            /// </remarks>
+            /// <response code="201">Retorna usuario criado</response>
+            /// <response code="401">E-mail ou senha invalido</response>
 
             [HttpPost("logar")]
             [AllowAnonymous]

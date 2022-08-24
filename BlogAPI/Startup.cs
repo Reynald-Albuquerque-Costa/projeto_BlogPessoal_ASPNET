@@ -13,9 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,8 +49,40 @@ namespace BlogAPI
             services.AddCors();
             services.AddControllers();
 
+            // Configuração Swagger
+            services.AddSwaggerGen(
+            s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Blog Pessoal",
+                    Version = "v1"
+                });
+
+                s.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new List<string>()
+                        }
+                    }
+                );
+
+              var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+              var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+              s.IncludeXmlComments(xmlPath);
+            }
+        );
             // Configuração de Serviços
-            services.AddScoped<IAutenticacao, AutenticacaoServicos>();
+                services.AddScoped<IAutenticacao, AutenticacaoServicos>();
 
             // Configuração do Token Autenticação JWTBearer
             var chave = Encoding.ASCII.GetBytes(Configuration["Settings:Secret"]);
@@ -78,6 +113,11 @@ namespace BlogAPI
             {
                 contexto.Database.EnsureCreated();
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlogPessoal v1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
             // Ambiente de produção
